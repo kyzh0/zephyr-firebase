@@ -886,6 +886,45 @@ async function getNavigatusData() {
   };
 }
 
+async function getMrcData() {
+  let windAverage = null;
+  let windGust = null;
+  let windBearing = null;
+  let temperature = null;
+
+  try {
+    const { data } = await axios.post(
+      'https://www.otago.ac.nz/surveying/potree/remote/pisa_meteo/OtagoUni_PisaRange_PisaMeteo.csv',
+      {
+        responseType: 'text',
+        headers: {
+          Connection: 'keep-alive'
+        }
+      }
+    );
+    const matches = data.match(/"[0-9]{4}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}"/g);
+    if (matches.length) {
+      const lastRow = data.slice(data.lastIndexOf(matches[matches.length - 1]));
+      const temp = lastRow.split(',');
+      if (temp.length == 39) {
+        windAverage = Math.round(Number(temp[23]) * 3.6 * 100) / 100;
+        windGust = Math.round(Number(temp[26]) * 3.6 * 100) / 100;
+        windBearing = Number(temp[24]);
+        temperature = Number(temp[7]);
+      }
+    }
+  } catch (error) {
+    functions.logger.error(error);
+  }
+
+  return {
+    windAverage,
+    windGust,
+    windBearing,
+    temperature
+  };
+}
+
 async function saveData(db, data, stationId, date, json, name, type, lat, lon) {
   // handle likely erroneous values
   let avg = data.windAverage;
@@ -1014,6 +1053,8 @@ exports.stationWrapper = async function stationWrapper(source) {
           data = await getMpycData();
         } else if (docData.type === 'navigatus') {
           data = await getNavigatusData();
+        } else if (docData.type === 'mrc') {
+          data = await getMrcData();
         }
       }
 
