@@ -886,6 +886,38 @@ async function getNavigatusData() {
   };
 }
 
+async function getMfhbData() {
+  let windAverage = null;
+  const windGust = null;
+  let windBearing = null;
+  let temperature = null;
+
+  try {
+    const { data } = await axios.post(
+      '	https://www.weatherlink.com/embeddablePage/getData/5e1372c8fe104ac5acc1fe2d8cb8b85c',
+      {
+        headers: {
+          Connection: 'keep-alive'
+        }
+      }
+    );
+    if (data) {
+      windAverage = data.wind;
+      windBearing = data.windDirection;
+      temperature = data.temperature;
+    }
+  } catch (error) {
+    functions.logger.error(error);
+  }
+
+  return {
+    windAverage,
+    windGust,
+    windBearing,
+    temperature
+  };
+}
+
 async function getMrcData() {
   let windAverage = null;
   let windGust = null;
@@ -1053,6 +1085,8 @@ exports.stationWrapper = async function stationWrapper(source) {
           data = await getMpycData();
         } else if (docData.type === 'navigatus') {
           data = await getNavigatusData();
+        } else if (docData.type === 'mfhb') {
+          data = await getMfhbData();
         } else if (docData.type === 'mrc') {
           data = await getMrcData();
         }

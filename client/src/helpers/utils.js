@@ -54,6 +54,8 @@ export function getStationTypeName(code) {
       return 'Mt Pleasant Yacht Club';
     case 'lpc':
       return 'Lyttelton Port Company';
+    case 'mfhb':
+      return "Model Flying Hawke's Bay";
     case 'mrc':
       return 'Mountain Research Centre';
     default:
