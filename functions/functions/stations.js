@@ -893,7 +893,7 @@ async function getMfhbData() {
   let temperature = null;
 
   try {
-    const { data } = await axios.post(
+    const { data } = await axios.get(
       '	https://www.weatherlink.com/embeddablePage/getData/5e1372c8fe104ac5acc1fe2d8cb8b85c',
       {
         headers: {
