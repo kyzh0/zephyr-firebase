@@ -1,3 +1,5 @@
+# Deprecated! See the [new repository](https://github.com/kyzh0/zephyr)
+
 # Zephyr
 
 <p align="center">
